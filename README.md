@@ -1,6 +1,6 @@
 # Trabalho PAA — Tema 5
 
-![Carimbo de Julio Thiago](carimbo.png)
+<img src="carimbo.png" alt="Carimbo de Julio Thiago" width="220">
 
 ## Sobre o trabalho
 
