@@ -9,7 +9,14 @@ Foram implementadas as três versões pedidas no enunciado:
 3. Versão extra (dois ponteiros): mergesort seguido de janela deslizante.
 """
 
-from trabalho_base import aleatorio, mergesort, salvar_csv, teste_do_dobro
+from trabalho_base import (
+    aleatorio,
+    invertido,
+    mergesort,
+    ordenado,
+    salvar_csv,
+    teste_do_dobro
+)
 
 AMOSTRAS_CASO_MEDIO = 30
 TAMANHOS_BASE = (100, 200, 400, 800, 1600)
@@ -175,15 +182,28 @@ def _media_dois_ponteiros(n, distancia_maxima, fase="total", amostras=AMOSTRAS_C
     return total / amostras
 
 
-# Execucao dos experimentos e exportacao para CSV
+def _medir_caso_extremo_binaria(entrada, distancia_maxima):
+    _, comp_ord, voltas_buscas = contar_pares_ordenada_binaria(
+        entrada, distancia_maxima
+    )
+    return comp_ord + voltas_buscas
+
+
+def _medir_caso_extremo_dois_ponteiros(entrada, distancia_maxima):
+    _, comp_ord, comp_janela = contar_pares_dois_ponteiros(
+        entrada, distancia_maxima
+    )
+    return comp_ord + comp_janela
+
+
+# Executa todos os experimentos e exporta os dados brutos para CSV
 def executar_experimentos():
     """Executa todos os cenários do Tema 5 e exporta os dados brutos para CSV."""
     dados = []
 
-    # 1. Comparação entre as três versões para d = 0, d = 5 e d = 100
     for d in (0, 5, 100):
         print("\n" + "=" * 72)
-        print(f"CENÁRIO d = {d} (Média de {AMOSTRAS_CASO_MEDIO} entradas aleatórias)")
+        print(f"CENÁRIO CASO MÉDIO: d = {d} (Média de {AMOSTRAS_CASO_MEDIO} entradas aleatórias)")
         print("=" * 72)
 
         teste_do_dobro(
@@ -268,6 +288,56 @@ def executar_experimentos():
         lambda n: _media_dois_ponteiros(n, 5, fase="janela", amostras=5),
         tamanhos=TAMANHOS_ESPERTA_ESTENDIDA,
         versao="extra_dois_ponteiros_estendida_janela_d5",
+        dados=dados,
+    )
+
+    print("\n" + "=" * 72)
+    print("MELHOR E PIOR CASO EXPLÍCITOS POR VERSÃO")
+    print("=" * 72)
+
+    # Ingênua: sempre faz n*(n-1)/2 comparações (melhor caso == pior caso)
+    teste_do_dobro(
+        "Ingênua — Melhor Caso (lista ordenada, d=0, nenhum par válido)",
+        lambda n: contar_pares_ingenua(ordenado(n), 0)[1],
+        tamanhos=TAMANHOS_BASE,
+        versao="ingenua_melhor_caso",
+        dados=dados,
+    )
+    teste_do_dobro(
+        "Ingênua — Pior Caso (notas todas iguais, d=100, todos os pares válidos)",
+        lambda n: contar_pares_ingenua([50] * n, 100)[1],
+        tamanhos=TAMANHOS_BASE,
+        versao="ingenua_pior_caso",
+        dados=dados,
+    )
+
+    teste_do_dobro(
+        "Esperta Busca Binária — Melhor Caso (ordenado(n), d=0)",
+        lambda n: _medir_caso_extremo_binaria(ordenado(n), 0),
+        tamanhos=TAMANHOS_BASE,
+        versao="esperta_binaria_melhor_caso",
+        dados=dados,
+    )
+    teste_do_dobro(
+        "Esperta Busca Binária — Pior Caso (invertido(n), d=100)",
+        lambda n: _medir_caso_extremo_binaria(invertido(n), 100),
+        tamanhos=TAMANHOS_BASE,
+        versao="esperta_binaria_pior_caso",
+        dados=dados,
+    )
+
+    teste_do_dobro(
+        "Extra Dois Ponteiros — Melhor Caso (ordenado(n), d=0)",
+        lambda n: _medir_caso_extremo_dois_ponteiros(ordenado(n), 0),
+        tamanhos=TAMANHOS_BASE,
+        versao="extra_dois_ponteiros_melhor_caso",
+        dados=dados,
+    )
+    teste_do_dobro(
+        "Extra Dois Ponteiros — Pior Caso (invertido(n), d=5)",
+        lambda n: _medir_caso_extremo_dois_ponteiros(invertido(n), 5),
+        tamanhos=TAMANHOS_BASE,
+        versao="extra_dois_ponteiros_pior_caso",
         dados=dados,
     )
 
