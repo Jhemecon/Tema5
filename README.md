@@ -1,13 +1,13 @@
 <div align="center">
 
-# 📊 Pares de Notas Equilibradas — Tema 5
+# Pares de Notas Equilibradas — Tema 5
 
-**Projeto e Análise de Algoritmos · CIESA · Ciência da Computação (4º/6º Períodos)**
+**Projeto e Análise de Algoritmos · CIESA · Ciência da Computação (4º Período)**
 
-[![Python](https://img.shields.io/badge/Python-3.8%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
-[![Dependencies](https://img.shields.io/badge/Depend%C3%AAncias-Zero%20(Stdlib)-00A86B?style=for-the-badge)](trabalho_base.py)
-[![Complexity](https://img.shields.io/badge/M%C3%A9todo-Teste%20do%20Dobro-6F42C1?style=for-the-badge)](tema5.py)
-[![Status](https://img.shields.io/badge/C%C3%B3digo-Conclu%C3%ADdo-2EA44F?style=for-the-badge)](#-status-das-entregas)
+![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![Dependências](https://img.shields.io/badge/Dependencias-Zero%20Stdlib-00A86B?style=for-the-badge)
+![Método](https://img.shields.io/badge/Metodo-Teste%20do%20Dobro-6F42C1?style=for-the-badge)
+![Status](https://img.shields.io/badge/Codigo-Concluido-2EA44F?style=for-the-badge)
 
 <br>
 
@@ -26,20 +26,17 @@
 
 ---
 
-## 🎯 Sobre o Problema
+## Sobre o Problema
 
-Para planejar dinâmicas em dupla equilibradas, a coordenação acadêmica precisa saber **quantos pares distintos de alunos** possuem diferença de nota de no máximo $d$ pontos. Formalmente, dada uma lista com $n$ notas inteiras no intervalo $[0, 100]$ e uma tolerância $d \ge 0$, busca-se a cardinalidade do conjunto:
+Para planejar dinâmicas em dupla equilibradas, a coordenação acadêmica precisa saber **quantos pares distintos de alunos** possuem diferença de nota de no máximo `d` pontos. Dada uma lista com `n` notas inteiras no intervalo `[0, 100]` e uma tolerância `d >= 0`, conta-se quantos pares `(i, j)` com `0 <= i < j < n` satisfazem:
 
-$$\Big\vert{}\,\big\{\,(i, j) \;\big\vert{}\; 0 \le i < j < n \;\text{ e }\; \vert{}\text{nota}[i] - \text{nota}[j]\vert{} \le d\,\big\}\,\Big\vert{}$$
+$$\vert{}nota[i] - nota[j]\vert{} \le d$$
 
-O objetivo do projeto é resolver o problema por múltiplas abordagens, instrumentar suas **operações básicas** separadamente (sem cronometrar tempo de máquina) e comprovar suas classes assintóticas por meio do **Teste do Dobro** — observando a razão que estabiliza e a convergência da coluna `dobro` $= c(n)/c(n/2)$.
-
-> [!IMPORTANT]
-> **Conformidade com as Regras da Disciplina:** Todas as soluções foram implementadas do zero utilizando exclusivamente o `mergesort` e os geradores determinísticos de `trabalho_base.py`. Não foram utilizadas funções ou estruturas prontas proibidas (`sorted`, `list.sort`, `bisect`, `set`, `dict`, `Counter` ou operador `in` em listas).
+O projeto resolve o problema por múltiplas abordagens, instrumenta suas **operações básicas** separadamente (sem cronometrar tempo de máquina) e comprova suas classes assintóticas por meio do **Teste do Dobro** — observando a razão que estabiliza e a convergência da coluna `dobro = c(n) / c(n/2)`.
 
 ---
 
-## ⚡ Estratégias e Complexidade
+## Estratégias e Complexidade
 
 Foram implementadas três versões completas em `tema5.py`:
 
@@ -50,49 +47,76 @@ Foram implementadas três versões completas em `tema5.py`:
 | **3. Extra** | `contar_pares_dois_ponteiros` | Comparações + passos da janela | $\Theta(n \log n)$ | $\Theta(n)$ | $\Theta(n \log n)$ | $\Theta(n \log n)$ | $\Theta(n \log n)$ |
 
 ### Como cada abordagem funciona
-1. **Ingênua:** Percorre todos os pares $(i, j)$ com $i < j$ por meio de dois laços aninhados, executando exatamente $\frac{n(n-1)}{2}$ comparações independentemente dos valores das notas.
-2. **Esperta (Ordenação + Busca Binária):** Ordena a lista com `mergesort` e, para cada posição $i$, aplica uma busca binária adaptada (`_ultimo_menor_ou_igual`) em $[i+1 \dots n-1]$ para localizar o último índice com nota $\le \text{nota}[i] + d$. A quantidade de pares válidos daquele aluno é obtida diretamente por $\text{último} - i$.
-3. **Extra (Ordenação + Dois Ponteiros):** Após o `mergesort`, desliza uma janela $[esquerda \dots direita)$ pela lista ordenada. Como o ponteiro `direita` apenas avança (nunca retrocede), a varredura executa no máximo $2n$ operações, reduzindo a **Fase 2** para $\Theta(n)$.
+
+1. **Ingênua (`contar_pares_ingenua`):** Percorre todos os pares `(i, j)` com `i < j` por meio de dois laços aninhados, executando exatamente `n(n - 1) / 2` comparações independentemente dos valores das notas.
+2. **Esperta (`contar_pares_ordenada_binaria`):** Ordena a lista com `mergesort` e, para cada posição `i`, aplica uma busca binária adaptada (`_ultimo_menor_ou_igual`) em `[i + 1 .. n - 1]` para localizar o último índice com nota `<= nota[i] + d`. A quantidade de pares válidos daquele aluno sai diretamente por `ultimo - i`.
+3. **Extra (`contar_pares_dois_ponteiros`):** Após o `mergesort`, desliza uma janela `[esquerda .. direita)` pela lista ordenada. Como o ponteiro `direita` apenas avança (nunca retrocede), a varredura executa no máximo `2n` comparações, reduzindo a **Fase 2** para $\Theta(n)$.
 
 ---
 
-## 🧠 Análise Teórica (Tema 5)
+## Análise Teórica (Tema 5)
 
 <details open>
 <summary><b>1. A classe assintótica muda com o valor de <code>d</code> (<code>d = 0</code>, <code>d = 5</code>, <code>d = 100</code>)?</b></summary>
+
 <br>
 
 **Não.**
-* Na **versão ingênua**, os dois laços sempre testam todos os $\frac{n(n-1)}{2}$ pares sem parada antecipada ($\Theta(n^2)$ para qualquer $d$).
-* Nas **versões espertas**, o `mergesort` executa $\Theta(n \log n)$ comparações antes mesmo de $d$ ser consultado, dominando o custo assintótico total em todos os cenários. Variar $d$ altera apenas as constantes da Fase 2.
+- Na **versão ingênua**, os dois laços sempre testam todos os `n(n - 1) / 2` pares sem parada antecipada ($\Theta(n^2)$ para qualquer `d`).
+- Nas **versões espertas**, o `mergesort` executa $\Theta(n \log n)$ comparações antes mesmo de `d` ser consultado, dominando o custo assintótico total em todos os cenários. Variar `d` altera apenas as constantes da Fase 2.
 
 </details>
 
-<details>
+<details open>
 <summary><b>2. Por que contar os pares é mais rápido do que listá-los?</b></summary>
+
 <br>
 
 Porque a contagem calcula quantos elementos cabem no intervalo válido por **aritmética de índices** (`ultimo - i` ou `direita - 1 - esquerda`) em tempo $O(1)$ por aluno, alcançando $\Theta(n \log n)$ no total.
 
-Se o algoritmo precisasse **listar** cada par, o custo mínimo seria limitado pelo tamanho da própria saída ($\Omega(\text{saída})$). Em uma entrada onde todas as notas são iguais (ex.: `[50, 50, ..., 50]`) ou quando $d = 100$, **todos** os $\frac{n(n-1)}{2}$ pares são válidos — logo, apenas construir ou imprimir a lista de pares já custaria $\Theta(n^2)$, igualando a versão ingênua.
+Se o algoritmo precisasse **listar** cada par, o custo mínimo seria limitado pelo tamanho da própria saída. Em uma entrada onde todas as notas são iguais (ex.: `[50, 50, ..., 50]`) ou quando `d = 100`, **todos** os `n(n - 1) / 2` pares são válidos — logo, apenas construir ou imprimir a lista de pares já custaria $\Theta(n^2)$, igualando a versão ingênua.
 
 </details>
 
-<details>
+<details open>
 <summary><b>3. Busca Binária vs. Dois Ponteiros (Versão Extra)</b></summary>
+
 <br>
 
-Embora ambas apresentem custo total $\Theta(n \log n)$ devido ao `mergesort`, a medição isolada da **Fase 2** na série estendida ($n$ até $100.000$) comprova a diferença estrutural:
-* **Busca Binária:** estabiliza em $c / (n \log_2 n)$ com fator `dobro` $\approx 2.13$.
-* **Dois Ponteiros:** estabiliza em $c / n$ com fator `dobro` $= 2.00$.
+Embora ambas apresentem custo total $\Theta(n \log n)$ devido ao `mergesort`, a medição isolada da **Fase 2** na série estendida (`n` até `100.000`) comprova a diferença estrutural:
+- **Busca Binária:** estabiliza em `c / (n log2 n)` com fator `dobro` próximo de `2.13`.
+- **Dois Ponteiros:** estabiliza em `c / n` com fator `dobro = 2.00`.
 
 </details>
 
 ---
 
-## 🚀 Como Executar
+## Como Executar
 
 O projeto utiliza apenas bibliotecas padrão do Python 3 (`csv`, `math`, `random`, `sys`). Na raiz do repositório, execute:
 
 ```bash
 python3 tema5.py
+```
+
+### Pipeline executado automaticamente
+
+1. **Validação de Correção (`validar_correcao`):** Verifica a equivalência exata entre as três versões em **10 casos de borda** (lista vazia, 1 elemento, todas iguais, repetidas e extremos `0` e `100`) e em **1.000 entradas aleatórias**.
+2. **Parte A — Caso Médio (`n = 100` a `1.600`):** Calcula a média de **30 amostras aleatórias** com sementes fixas para `d` em `{0, 5, 100}`, reportando o total e cada fase separadamente.
+3. **Parte B — Série Estendida (`n = 12.500` a `100.000`):** Avalia as versões espertas para `d = 5` em entradas de grande porte.
+4. **Parte C — Melhor e Pior Caso Explícitos:** Mede entradas determinísticas construídas com `ordenado(n)`, `invertido(n)` e `[50] * n`.
+5. **Exportação:** Grava todas as séries no arquivo `medicoes.csv`.
+
+---
+
+## Estrutura do Repositório
+
+```text
+├── tema5.py            # Implementações das 3 versões, testes de correção e experimentos
+├── trabalho_base.py    # Base comum (mergesort, geradores, teste_do_dobro, salvar_csv)
+├── medicoes.csv        # Dados brutos gerados automaticamente ao rodar tema5.py
+├── carimbo.png         # Carimbo oficial de validação do trabalho
+└── README.md           # Documentação do projeto
+```
+
+---
