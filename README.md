@@ -1,52 +1,45 @@
-# Trabalho PAA — Tema 5: Pares de Notas Equilibradas
+<div align="center">
 
-<img src="carimbo.png" alt="Carimbo de Julio Thiago" width="220">
+# Pares de Notas Equilibradas — Tema 5
+**Projeto e Análise de Algoritmos · CIESA · Ciência da Computação (4º/6º Períodos)**
 
-## Sobre o trabalho
+![Python](https://img.shields.io/badge/Python-3.x-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![Status](https://img.shields.io/badge/Status-Implementado-2EA44F?style=for-the-badge)
+![Complexidade](https://img.shields.io/badge/An%C3%A1lise-Teste%20do%20Dobro-8A2BE2?style=for-the-badge)
 
-Projeto prático da disciplina de **Projeto e Análise de Algoritmos (CIESA — 4º/6º períodos)** dedicado à análise empírica e teórica do problema **Pares de Notas Equilibradas**[cite: 14, 17, 22].
+<br>
 
-Dada uma lista com as notas de $n$ alunos e uma distância máxima $d$, o objetivo é contar quantos pares distintos $(i, j)$ com $i < j$ satisfazem $|nota[i] - nota[j]| \le d$, instrumentando as operações básicas para identificar suas classes assintóticas pelo **Teste do Dobro**[cite: 14, 17, 21, 22].
+<img src="carimbo.png" alt="Carimbo de Julio Thiago" width="210">
 
----
-
-## Abordagens Implementadas
-
-O arquivo `tema5.py` contém três soluções completas, utilizando exclusivamente os utilitários de [trabalho_base.py](trabalho_base.py)[cite: 20, 21, 22]:
-
-1. **Versão Ingênua (`contar_pares_ingenua`):**
-   * Compara diretamente todos os pares $(i, j)$ com $i < j$ usando dois laços aninhados[cite: 21].
-   * **Operação contada:** comparações de diferença entre notas ($\Theta(n^2)$)[cite: 17, 21].
-
-2. **Versão Esperta (`contar_pares_ordenada_binaria`):**
-   * Ordena a lista com `mergesort` e, para cada aluno $i$, aplica uma busca binária adaptada (`_ultimo_menor_ou_igual`) para encontrar o maior índice cuja nota é $\le nota[i] + d$, somando `ultimo - i` pares sem percorrê-los um a um[cite: 17, 21].
-   * **Operações contadas (separadas e somadas):** comparações da ordenação ($\Theta(n \log n)$) e voltas da busca binária ($\Theta(n \log n)$)[cite: 17, 21].
-
-3. **Versão Extra — Janela Deslizante (`contar_pares_dois_ponteiros`):**
-   * Ordena a lista com `mergesort` e mantém dois ponteiros (`esquerda` e `direita`) que avançam monotonicamente sem retroceder[cite: 17, 21].
-   * **Operações contadas (separadas e somadas):** comparações da ordenação ($\Theta(n \log n)$) e comparações da janela deslizante ($\Theta(n)$)[cite: 17, 21].
+</div>
 
 ---
 
-## Estrutura dos Experimentos (`tema5.py`)
+## Sobre o Problema
 
-Ao executar o script principal, o programa realiza automaticamente quatro etapas:
+Dada uma lista com as notas de $n$ alunos e uma tolerância $d$, o desafio consiste em **contar quantos pares distintos** $(i, j)$ com $i < j$ possuem notas equilibradas, ou seja:
 
-* **Validação de Correção (`validar_correcao`):** Verifica a equivalência das três versões em 10 casos de borda (lista vazia, um elemento, todas as notas iguais, repetidas e limites `0` e `100`) e em **1.000 entradas aleatórias** antes de iniciar qualquer medição[cite: 20, 21].
-* **Caso Médio (`Parte A`):** Mede a média de **30 entradas aleatórias** (com sementes fixas) para $n \in \{100, 200, 400, 800, 1600\}$ nos cenários $d = 0$, $d = 5$ e $d = 100$, exibindo tabelas tanto do custo total quanto de cada fase isolada[cite: 17, 20, 21].
-* **Série Estendida (`Parte B`):** Avalia as versões espertas para $n \in \{12.500, 25.000, 50.000, 100.000\}$ ($d = 5$), evidenciando a estabilização de $c/(n \log_2 n)$ no custo total e a diferença entre $\Theta(n \log n)$ (busca binária) e $\Theta(n)$ (dois ponteiros) na fase pós-ordenação[cite: 17, 20, 21].
-* **Melhor e Pior Caso Explícitos (`Parte C`):** Mede entradas extremas construídas com `ordenado(n)`, `invertido(n)` e notas constantes (`[50] * n`) para cada versão[cite: 20, 21].
+$$\vert{}\text{nota}[i] - \text{nota}[j]\vert{} \le d$$
+
+O projeto compara três abordagens distintas, contabiliza suas operações básicas separadamente e comprova suas classes de complexidade assintótica por meio do **Teste do Dobro**[cite: 14, 17, 21, 22].
 
 ---
 
-## Como Reproduzir
+## Comparativo das Estratégias
 
-Certifique-se de que `tema5.py` e `trabalho_base.py` estejam no mesmo diretório e execute[cite: 20, 21]:
+| Estratégia | Função em `tema5.py` | Operação Contada | Fase 1 (Ordenação) | Fase 2 (Contagem) | Custo Total |
+| :--- | :--- | :--- | :---: | :---: | :---: |
+| **1. Ingênua** | `contar_pares_ingenua` | Comparações entre pares | — | $\Theta(n^2)$ | **$\Theta(n^2)$** |
+| **2. Esperta** | `contar_pares_ordenada_binaria` | Comparações + voltas da busca | $\Theta(n \log n)$ | $\Theta(n \log n)$ | **$\Theta(n \log n)$** |
+| **3. Extra** | `contar_pares_dois_ponteiros` | Comparações + passos da janela | $\Theta(n \log n)$ | $\Theta(n)$ | **$\Theta(n \log n)$** |
+
+> **Destaque técnico:** Embora as versões **Esperta** e **Extra** pertençam à mesma classe total $\Theta(n \log n)$ por conta do `mergesort`, isolar a **Fase 2** na série estendida ($n$ até $100.000$) evidencia a queda de $\Theta(n \log n)$ (busca binária) para $\Theta(n)$ (janela deslizante).
+
+---
+
+## Como Executar
+
+Certifique-se de ter o **Python 3** instalado e execute o comando abaixo na raiz do repositório[cite: 20, 21, 22]:
 
 ```bash
 python3 tema5.py
-## Arquivos principais
-
-- `tema5.py`: implementações e experimentos do Tema 5.
-- `trabalho_base.py`: funções comuns de ordenação, geração de dados e medição.
-- `carimbo.png`: carimbo utilizado neste trabalho.
