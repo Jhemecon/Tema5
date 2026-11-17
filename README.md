@@ -19,6 +19,8 @@
 [Estratégias e Complexidade](#-estratégias-e-complexidade) •
 [Análise Teórica](#-análise-teórica-tema-5) •
 [Como Executar](#-como-executar) •
+[Pipeline](#-pipeline-executado-automaticamente) •
+[Estrutura](#-estrutura-do-repositório)
 
 </div>
 
