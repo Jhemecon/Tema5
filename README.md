@@ -19,8 +19,6 @@
 [Estratégias e Complexidade](#-estratégias-e-complexidade) •
 [Análise Teórica](#-análise-teórica-tema-5) •
 [Como Executar](#-como-executar) •
-[Prévia das Saídas](#-prévia-das-saídas) •
-[Estrutura](#-estrutura-do-repositório)
 
 </div>
 
